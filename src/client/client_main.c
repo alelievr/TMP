@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/25 22:39:17 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/25 22:39:55 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/25 23:14:06 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,5 +14,7 @@
 
 int				main(int ac, char **av)
 {
+	(void)ac;
+	(void)av;
 	return (0);
 }
