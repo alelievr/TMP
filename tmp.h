@@ -3,13 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   tmp.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shayn <shayn@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/25 22:35:48 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/25 22:36:53 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/25 15:12:37 by shayn            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-
+typedef	struct 	s_co
+{
+	int		socket;
+	char	*name;
+}				t_co;
