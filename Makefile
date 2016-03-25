@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: alelievr <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: shayn <shayn@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2014/07/15 15:13:38 by alelievr          #+#    #+#              #
-#    Updated: 2016/03/25 23:19:41 by alelievr         ###   ########.fr        #
+#    Created  2014/07/15 15:13:38 by alelievr          #+#    #+#              #
+#    Updated  2016/03/25 23:13:53 by alelievr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -102,6 +102,7 @@ endif
 ##  AUTO       ##
 #################
 
+CC 			= 	clang
 NASM		=	nasm
 OBJS_S		=	$(patsubst %.c,%.o, $(filter %.c, $(SRCS_SERVER))) \
 				$(patsubst %.cpp,%.o, $(filter %.cpp, $(SRCS_SERVER))) \
