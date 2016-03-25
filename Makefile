@@ -6,7 +6,11 @@
 #    By: shayn <shayn@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/07/15 15:13:38 by alelievr          #+#    #+#              #
+<<<<<<< HEAD
 #    Updated: 2016/03/25 15:07:45 by shayn            ###   ########.fr        #
+=======
+#    Updated: 2016/03/25 23:13:53 by alelievr         ###   ########.fr        #
+>>>>>>> cd6c22754a8e7e01d30e0f7f5868fa056ba5660a
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,9 +22,9 @@
 SRCDIR_S	=	src/server
 SRCDIR_C	=	src/client
 
-SRCS_SERVER	=	main.c			\
+SRCS_SERVER	=	server_main.c		\
 
-SRCS_CLIENT	=	main.c			\
+SRCS_CLIENT	=	client_main.c		\
 
 #	Objects
 OBJDIR		=	obj
