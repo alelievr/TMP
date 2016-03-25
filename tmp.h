@@ -14,13 +14,15 @@
 # include <unistd.h>
 # include <stdlib.h>
 
-# define OPTIONS	""
+# define OPTIONS			""
+
+# define MAX_LOGIN_LENGTH	64
+# define SERVER_TIMEOUT		60 //1 min
 
 typedef	struct 	s_co
 {
-	char	*name;
-	int		socket;
-	int		:32;
+	char	name[MAX_LOGIN_LENGTH];
+	char	ip[sizeof("255.255.255.255")];
 }				t_co;
 
 t_co		*get_connected_client_list(void);
