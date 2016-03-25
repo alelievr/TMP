@@ -14,6 +14,8 @@
 # include <unistd.h>
 # include <stdlib.h>
 
+# define OPTIONS	""
+
 typedef	struct 	s_co
 {
 	char	*name;
@@ -21,4 +23,4 @@ typedef	struct 	s_co
 	int		:32;
 }				t_co;
 
-t_co		*get_connected_client_list(char *opts);
+t_co		*get_connected_client_list(void);

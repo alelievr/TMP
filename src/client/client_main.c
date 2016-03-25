@@ -15,12 +15,13 @@
 
 int				main(int ac, char **av)
 {
-	char		opts[0xF00];
 	t_co		*infos;
 
-	getopt(ac, av, opts);
-	printf("%s running with %s\n", *av, opts);
+	getopt(ac, av, OPTIONS);
+	if (opterr)
+		return (0);
+	printf("%s running with %s\n", *av, optarg);
 
-	infos = get_connected_client_list(opts);
+	infos = get_connected_client_list();
 	return (0);
 }
