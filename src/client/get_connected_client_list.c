@@ -6,20 +6,12 @@
 /*   By: shayn <shayn@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/25 23:18:25 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/25 17:42:04 by shayn            ###   ########.fr       */
+/*   Updated: 2016/03/25 20:01:26 by shayn            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tmp.h"
 #define IP_FILE ".ip_server"
-
-static void			ft_exit(char *str) __attribute__ ((noreturn));
-
-static void			ft_exit(char *str)
-{
-	printf("%s\n", str);
-	exit(0);
-}
 
 t_co				*ci_get_infos(void)
 {
@@ -47,45 +39,27 @@ t_co				*ci_get_infos(void)
 	return (infos);
 }
 
-int					ci_connect_server(t_co *infos)
+t_co				*ci_get_client_list(int socket)
 {
-	struct protoent		*proto;
-	struct sockaddr_in	sini;
-	int					sock;
+	static t_co		ci_list[255];
+	static int		i = -1;
 
-	if ((proto = getprotobyname("tcp")) == 0)
-		return (-1);
-	sock = socket(PF_INET, SOCK_STREAM, proto->p_proto);
-	sini.sin_family = AF_INET;
-	sini.sin_port = htons(atoi("4242"));
-	sini.sin_addr.s_addr = inet_addr(infos->ip);
-	if ((connect(sock, (const struct sockaddr *)&sini,
-		sizeof(sini))) == -1)
-		ft_exit("Connection failed");
-	if ((sendto(sock, infos->name, MAX_LOGIN_LENGTH, MSG_CONFIRM,
-	 (const struct sockaddr *)&sini, sizeof(sini))) == -1)
-		ft_exit("Cannot send infos to the server");
-	return (sock);
+	while ((read(socket, &ci_list[++i], sizeof(t_co))) > 0)
+	{
+		if (i == 0)
+			printf("Clients connected:\n");
+		printf("\t%s\n", ci_list[i].name);
+		break ;
+	}
+	ci_list[i].name[0] = 0;
+	i = -1;
+	while (ci_list[++i].name[0])
+		printf("Info on client no%d:\n\tname: \t%s\nip: [%s]\n\n--------------------------\n\n",
+		 i, ci_list[i].name, ci_list[i].ip);
+	return (ci_list);
 }
 
-// void				ci_discuss(int socket)
-// {
-// 	ssize_t			ret;
-// 	char			buf[256];
-
-// 	if (!(ret))	
-// }
-
-t_co				*get_connected_client_list(void)
+t_co				*get_connected_client_list(int socket)
 {
-	t_co	*infos;
-	int		socket;
-
-	if (!(infos = ci_get_infos()))
-		ft_exit("Can't get any reliable informations.");
-	socket = ci_connect_server(infos);
-	// while (42)
-	// 	ci_discuss(socket);
-	printf("\n\nConnection infos: \nname: %s\nip: [%s]\n", infos->name, infos->ip);
-	return (infos);
+	return (ci_get_client_list(socket));
 }
