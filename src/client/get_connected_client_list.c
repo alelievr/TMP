@@ -6,7 +6,7 @@
 /*   By: shayn <shayn@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/25 23:18:25 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/25 17:42:04 by shayn            ###   ########.fr       */
+/*   Updated: 2016/03/25 19:32:59 by shayn            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,24 +68,51 @@ int					ci_connect_server(t_co *infos)
 	return (sock);
 }
 
-// void				ci_discuss(int socket)
-// {
-// 	ssize_t			ret;
-// 	char			buf[256];
+t_co				*ci_get_client_list(int socket)
+{
+	static t_co		ci_list[255];
+	int				i = -1;
 
-// 	if (!(ret))	
-// }
+	while ((read(socket, &ci_list[++i], sizeof(t_co))) > 0)
+	{
+		if (i == 0)
+			printf("ci_list[i].name = %s\n", ci_list[i].name);
+		printf("\t\t%s\n", ci_list[i].name);
+	}
+	ci_list[i].name[0] = 0;
+	i = -1;
+	while (ci_list[++i].name[0])
+		printf("Info on client no%d:\n\tname: \t%s\nip: [%s]\n\n-	-	-	-	-	-\n",
+		 i, ci_list[i].name, ci_list[i].ip);
+	return (ci_list);
+}
 
-t_co				*get_connected_client_list(void)
+int					ci_init_connexion()
 {
 	t_co	*infos;
 	int		socket;
 
 	if (!(infos = ci_get_infos()))
 		ft_exit("Can't get any reliable informations.");
-	socket = ci_connect_server(infos);
-	// while (42)
-	// 	ci_discuss(socket);
 	printf("\n\nConnection infos: \nname: %s\nip: [%s]\n", infos->name, infos->ip);
-	return (infos);
+	socket = ci_connect_server(infos);
+	return (socket);
+}
+
+t_co				*get_connected_client_list(int socket)
+{
+	return (ci_get_client_list(socket));
+}
+
+void				ci_wait_msg_server(int socket)
+{
+	char			buf[256];
+	ssize_t			ret;
+
+	if ((ret = read(socket, buf, 256)) > 0)
+	{
+		buf[ret] = '\0';
+		printf("Server sent %lu bytes: %s\n", ret, buf);
+	}
+	printf("No bytes received\n");
 }

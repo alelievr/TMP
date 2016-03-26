@@ -6,7 +6,7 @@
 /*   By: shayn <shayn@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/25 22:35:48 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/25 17:14:56 by shayn            ###   ########.fr       */
+/*   Updated: 2016/03/25 19:13:37 by shayn            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,9 @@ typedef	struct 	s_co
 	char	ip[sizeof("255.255.255.255")];
 }				t_co;
 
-t_co		*get_connected_client_list(void);
+t_co		*get_connected_client_list(int socket);
 t_co		*ci_get_infos(void);
+t_co		*ci_get_client_list(int socket);
 int			ci_connect_server(t_co *infos);
+int			ci_init_connexion(void);
+void		ci_wait_msg_server(int socket);
