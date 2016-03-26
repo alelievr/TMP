@@ -6,7 +6,7 @@
 #    By: shayn <shayn@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/07/15 15:13:38 by alelievr          #+#    #+#              #
-#    Updated: 2016/03/26 16:10:28 by alelievr         ###   ########.fr        #
+#    Updated: 2016/03/26 16:45:02 by alelievr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,6 @@ SRCS_SERVER	=	server_main.c		\
 SRCS_CLIENT	=	client_main.c		\
 				events.c			\
 				client_connexion.c	\
-				client_message.c	\
 				client_api.c		\
 
 #	Objects

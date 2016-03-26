@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/26 15:28:10 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/26 15:28:56 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/26 16:44:00 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,3 +14,17 @@
 
 #define CONNECTED_BYTE			'\01'
 #define DISCONNECTED_BYTE		'\00'
+
+# define IP_LENGTH			sizeof("255.255.255.255")
+# define MAX_LOGIN_LENGTH	64
+
+typedef struct	s_clients
+{
+	char			code;
+	long			:48;
+	char			name[MAX_LOGIN_LENGTH];
+	char			ip[IP_LENGTH];
+	int				:8;
+	int				fd;
+	int				:32;
+}				t_clients;

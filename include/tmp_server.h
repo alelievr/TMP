@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/26 02:34:33 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/26 15:38:31 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/26 16:43:55 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,19 +17,6 @@
 # include <stdlib.h>
 
 # define STACK_SIZE			42
-# define IP_LENGTH			sizeof("255.255.255.255")
-# define MAX_LOGIN_LENGTH	64
-
-typedef struct	s_clients
-{
-	char			code;
-	long			:48;
-	char			name[MAX_LOGIN_LENGTH];
-	char			ip[IP_LENGTH];
-	int				:8;
-	int				fd;
-	int				:32;
-}				t_clients;
 
 /*
  **	Client API:

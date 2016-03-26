@@ -29,20 +29,13 @@
 # define SERVER_TIMEOUT		60 //1 min
 # define IP_FILE			".ip_server"
 
-typedef	struct 	s_co
-{
-	char	code;
-	long	:48;
-	char	name[MAX_LOGIN_LENGTH];
-	char	ip[sizeof("255.255.255.255")];
-	int		:8;
-	int		socket;
-}				t_co;
+typedef t_clients	t_co;
 
 t_co		*get_connected_client_list(int socket);
 t_co		*ci_get_client_list(int socket);
 int			ci_init_connexion(void);
 void		ft_exit(char *str);
+int			get_client_list(char *buff);
 
 /*
  **	Connection events:

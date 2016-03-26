@@ -6,7 +6,7 @@
 /*   By: shayn <shayn@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/25 23:18:25 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/26 15:51:00 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/26 16:44:54 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,13 @@ int					server_connection_event(int socket)
 	if ((r = read(socket, &ci, sizeof(t_co))) < 0)
 		perror("(fatal) read"), exit(-1);
 	else if (r == 0)
+	{
 		printf("disconnected from server !\n");
+		return (-1);
+	}
 	else
 	{
-		ci.socket = 0;
+		ci.fd = 0;
 		if (ci.code == CONNECTED_BYTE)
 		{
 			add_client(&ci);
@@ -56,5 +59,6 @@ int					stdin_event(void)
 	long		r;
 
 	r = read(0, buff, sizeof(buff));
+	printf("catched stdin event: [%s]\n", buff);
 	return ((int)r);
 }

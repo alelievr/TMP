@@ -6,7 +6,7 @@
 /*   By: shayn <shayn@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/25 23:16:05 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/26 16:09:28 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/26 16:36:01 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,13 @@ int				main(int ac, char **av)
 				if (i == 0)
 					stdin_event();
 				else if (i == socket)
-					server_connection_event(socket);
+				{
+					if (server_connection_event(socket) == -1)
+					{
+						close(socket);
+						FD_CLR(socket, &read_fd_new);
+					}
+				}
 				else
 					peer_connection_event(i);
 			}

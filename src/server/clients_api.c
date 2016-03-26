@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/26 02:32:51 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/26 15:37:47 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/26 16:46:02 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,11 +48,11 @@ void			update_client_info(int fd, char *name, char *ip)
 		if (g_clients[i].fd == fd)
 		{
 			strncpy(g_clients[i].name, name, 63);
+			g_clients[i].name[63] = 0;
 			if (!ip)
 				strcpy(g_clients[i].ip, "0.0.0.0");
 			else
 				strcpy(g_clients[i].ip, ip);
-			g_clients[i].name[63] = 0;
 			break ;
 		}
 }
