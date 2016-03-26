@@ -1,5 +1,5 @@
 /* ************************************************************************** */
-/*                                                                            */
+/*			                                                                */
 /*                                                        :::      ::::::::   */
 /*   client_message.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
@@ -18,15 +18,17 @@ static t_co			*ci_get_infos(void)
 	int				fd;
 	ssize_t			ret;
 	char			*ptr;
+	char			buf_dns[255];
 
 	if (!(infos = (t_co*)malloc(sizeof(t_co))))
 		perror("malloc"), exit(-1);
 	if((fd = open(IP_FILE, O_RDONLY)) == -1)
-		ft_exit("IP file config not found");
-	if ((ret = read(fd, infos->ip, 15)) > 0)
+		ft_exit("IP file not found");
+	if ((ret = read(fd, buf_dns, 255)) > 0)
 	{
-		infos->ip[ret] = '\0';
-		if (!(ptr = strchr(infos->ip, ':')))
+		buf_dns[ret] = '\0';
+		// infos->ip[ret] = '\0';
+		if (!(ptr = strchr(buf_dns, ':')))
 			return (NULL);
 		else
 			*ptr = '\0';
@@ -36,6 +38,7 @@ static t_co			*ci_get_infos(void)
 	fflush(stdout);
 	if ((ret = read(0, infos->name, MAX_LOGIN_LENGTH)) > 0)
 		infos->name[ret] = '\0';
+	get_server_ip(buf_dns, infos->ip);
 	return (infos);
 }
 
@@ -69,4 +72,32 @@ int					ci_init_connexion()
 	printf("\n\nConnection infos: \nname: %s\nip: [%s]\n", infos->name, infos->ip);
 	socket = ci_connect_server(infos);
 	return (socket);
+}
+
+void				get_server_ip(char *domain, char *ip)
+{
+	struct addrinfo	hints, *res, *p;
+	int				status;
+
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+	if ((status = getaddrinfo(domain, NULL, &hints, &res)) != 0)
+		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(status));
+	for(p = res; p != NULL; p = p->ai_next)
+	{
+		void 			*addr;
+		char 			*ipver = NULL;
+
+		if (p->ai_family == AF_INET)
+		{
+			struct sockaddr_in *ipv4 = (struct sockaddr_in *)(unsigned long)p->ai_addr;
+			addr = &(ipv4->sin_addr);
+			ipver = "IPv4";
+		}
+        printf("  %s: %s\n", ipver, i);
+		inet_ntop(p->ai_family, addr, ip, sizeof(IP_LENGTH));
+        printf("  %s: %s\n", ipver, ip);
+    }
+    freeaddrinfo(res);
 }

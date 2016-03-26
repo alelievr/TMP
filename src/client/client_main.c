@@ -52,11 +52,5 @@ int				main(int ac, char **av)
 				else
 					peer_connection_event(i);
 			}
-//		list = get_connected_client_list(socket);
-//		ci_wait_msg_server(socket);
-		// if (!list[0].name[0])
-		// 	break ;
 	}
-	// close(socket);
-	// return (0);
 }

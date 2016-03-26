@@ -36,6 +36,7 @@ t_co		*ci_get_client_list(int socket);
 int			ci_init_connexion(void);
 void		ft_exit(char *str);
 int			get_client_list(char *buff);
+void		get_server_ip(char *domain, char *ip);
 
 /*
  **	Connection events:
