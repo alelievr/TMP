@@ -19,6 +19,7 @@ SRCDIR_S	=	src/server
 SRCDIR_C	=	src/client
 
 SRCS_SERVER	=	server_main.c		\
+				clients_api.c		\
 
 SRCS_CLIENT	=	client_main.c				\
 				get_connected_client_list.c	\
