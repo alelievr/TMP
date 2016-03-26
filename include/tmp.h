@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #pragma once
+# include "ft_rfc.h"
 # include <unistd.h>
 # include <stdlib.h>
 # include <sys/types.h>
@@ -26,17 +27,28 @@
 
 # define MAX_LOGIN_LENGTH	64
 # define SERVER_TIMEOUT		60 //1 min
+# define IP_FILE			".ip_server"
 
 typedef	struct 	s_co
 {
+	char	code;
+	long	:48;
 	char	name[MAX_LOGIN_LENGTH];
 	char	ip[sizeof("255.255.255.255")];
+	int		:8;
+	int		socket;
 }				t_co;
 
 t_co		*get_connected_client_list(int socket);
-t_co		*ci_get_infos(void);
 t_co		*ci_get_client_list(int socket);
-int			ci_connect_server(t_co *infos);
 int			ci_init_connexion(void);
-void		ci_wait_msg_server(int socket);
 void		ft_exit(char *str);
+
+/*
+ **	Connection events:
+*/
+int			stdin_event(void);
+int			server_connection_event(int socket);
+int			peer_connection_event(int socket);
+void		add_client(t_co *c);
+void		remove_client(t_co *c);

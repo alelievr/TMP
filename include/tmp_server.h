@@ -6,14 +6,15 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/26 02:34:33 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/26 03:51:20 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/26 15:38:31 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <unistd.h>
-#include <stdlib.h>
+# include "ft_rfc.h"
+# include <unistd.h>
+# include <stdlib.h>
 
 # define STACK_SIZE			42
 # define IP_LENGTH			sizeof("255.255.255.255")
@@ -21,8 +22,11 @@
 
 typedef struct	s_clients
 {
+	char			code;
+	long			:48;
 	char			name[MAX_LOGIN_LENGTH];
 	char			ip[IP_LENGTH];
+	int				:8;
 	int				fd;
 	int				:32;
 }				t_clients;
@@ -36,3 +40,4 @@ void			remove_client(int fd);
 t_clients		*get_client_info(int fd);
 void			send_new_connected_client(int fd);
 int				*get_all_open_sockets(void);
+void			send_disconnected_client(int fd);

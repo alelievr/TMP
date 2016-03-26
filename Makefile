@@ -6,7 +6,7 @@
 #    By: shayn <shayn@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/07/15 15:13:38 by alelievr          #+#    #+#              #
-#    Updated: 2016/03/25 19:46:42 by shayn            ###   ########.fr        #
+#    Updated: 2016/03/26 16:10:28 by alelievr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,10 +21,11 @@ SRCDIR_C	=	src/client
 SRCS_SERVER	=	server_main.c		\
 				clients_api.c		\
 
-SRCS_CLIENT	=	client_main.c				\
-				get_connected_client_list.c	\
-				client_connexion.c			\
-				client_message.c			\
+SRCS_CLIENT	=	client_main.c		\
+				events.c			\
+				client_connexion.c	\
+				client_message.c	\
+				client_api.c		\
 
 #	Objects
 OBJDIR		=	obj
@@ -40,7 +41,7 @@ CPPVERSION	=	c++11
 #Example $> make DEBUG=2 will set debuglevel to 2
 
 #	Includes
-INCDIRS		=	.
+INCDIRS		=	include
 
 #	Libraries
 LIBDIRS		=	

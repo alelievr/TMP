@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/26 02:32:51 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/26 04:03:00 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/26 15:37:47 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void			add_new_client(int fd)
 	for (int i = 0; i < 255; i++)
 		if (g_clients[i].fd == 0)
 		{
+			g_clients[i].code = CONNECTED_BYTE;
 			g_clients[i].fd = fd;
 			break ;
 		}
@@ -61,6 +62,7 @@ void			remove_client(int fd)
 	for (int i = 0; i < 255; i++)
 		if (g_clients[i].fd == fd)
 		{
+			g_clients[i].code = DISCONNECTED_BYTE;
 			g_clients[i].fd = 0;
 			break ;
 		}
@@ -81,7 +83,7 @@ void			send_new_connected_client(int fd)
 	for (int i = 0; i < 255; i++)
 		if (g_clients[i].fd != fd && g_clients[i].fd)
 		{
-			write(fd, g_clients + i, MAX_LOGIN_LENGTH + IP_LENGTH);
+			write(fd, g_clients + i, MAX_LOGIN_LENGTH + IP_LENGTH + sizeof(long));
 			printf("writed name: %s - ip: %s to %i\n", g_clients[i].name, g_clients[i].ip, fd);
 		}
 		else if (g_clients[i].fd == fd)
@@ -90,7 +92,27 @@ void			send_new_connected_client(int fd)
 		for (int i = 0; i < 255; i++)
 			if (g_clients[i].fd && g_clients[i].fd != fd)
 			{
-				write(g_clients[i].fd, cl, MAX_LOGIN_LENGTH + IP_LENGTH);
-				printf("writed name: %s - ip: %s to %i\n", g_clients[i].name, g_clients[i].ip, g_clients[i].fd);
+				write(g_clients[i].fd, cl, MAX_LOGIN_LENGTH + IP_LENGTH + sizeof(long));
+				printf("writed connected name: %s - ip: %s to %i\n", g_clients[i].name, g_clients[i].ip, g_clients[i].fd);
 			}
+}
+
+void			send_disconnected_client(int fd)
+{
+	t_clients	*cl = NULL;
+
+	for (int i = 0; i < 255; i++)
+		if (g_clients[i].fd == fd)
+			cl = g_clients + i;
+
+	if (cl)
+	{
+		cl->code = DISCONNECTED_BYTE;
+		for (int i = 0; i < 255; i++)
+			if (g_clients[i].fd && g_clients[i].fd != fd)
+			{
+				write(g_clients[i].fd, cl, MAX_LOGIN_LENGTH + IP_LENGTH + sizeof(long));
+				printf("writed disconnected name: %s - ip: %s to %i\n", g_clients[i].name, g_clients[i].ip, g_clients[i].fd);
+			}
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/25 22:39:17 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/26 04:06:29 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/26 16:17:24 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,22 +42,24 @@ static int			create_server(int port)
 
 static int		read_from_client(int filedes)
 {
-	t_clients			buffer;
+	char				buff[MAX_LOGIN_LENGTH];
 	long				nbytes;
-
 	struct sockaddr_in	connection;
-	socklen_t			addrlen;
+	socklen_t			addrlen = sizeof(connection);
 
-	nbytes = recvfrom(filedes, &buffer, sizeof(buffer), 0, (struct sockaddr *)&connection, &addrlen);
+	nbytes = recvfrom(filedes, buff, sizeof(buff), 0, (struct sockaddr *)&connection, &addrlen);
 	if (nbytes < 0)
-		perror ("recvfrom"), exit (EXIT_FAILURE);
+		perror("recvfrom"), exit(-1);
 	else if (nbytes == 0)
 		return -1;
 	else
 	{
+		printf("from IP address %s\n",
+				inet_ntoa(((struct sockaddr_in *)&connection)->sin_addr));
+
 		printf("%s\n", inet_ntoa(connection.sin_addr));
-		printf("received name: [%s]\n", buffer.name);
-		update_client_info(filedes, buffer.name, NULL);
+		printf("received name: [%s]\n", buff);
+		update_client_info(filedes, buff, NULL);
 		send_new_connected_client(filedes);
 	}
 	return 0;
@@ -82,9 +84,9 @@ static void		wait_for_event(int sock, fd_set *active_fd)
 				size = sizeof(clientname);
 				if ((new_sock = accept(sock, (struct sockaddr *)&clientname, &size)) < 0)
 					perror ("accept"), exit(-1);
-				printf("accepted connection: %i\n", new);
-				add_new_client(new);
-				FD_SET(new, active_fd);
+				printf("accepted connection: %i\n", new_sock);
+				add_new_client(new_sock);
+				FD_SET(new_sock, active_fd);
 			}
 			else
 			{
@@ -92,6 +94,7 @@ static void		wait_for_event(int sock, fd_set *active_fd)
 				{
 					printf("%s closed !\n", get_client_info(i)->name);
 					close (i);
+					send_disconnected_client(i);
 					remove_client(i);
 					FD_CLR(i, active_fd);
 				}
@@ -135,6 +138,7 @@ int				main(int ac, char **av)
 		get_server_socket(sock);
 		FD_ZERO(&read_fd);
 		FD_SET(sock, &read_fd);
+//		FD_SET(0, &read_fd);
 		while (42)
 			wait_for_event(sock, &read_fd);
 	}
