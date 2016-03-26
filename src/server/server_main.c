@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/25 22:39:17 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/26 02:41:54 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/26 03:56:20 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,49 +42,54 @@ static int			create_server(int port)
 
 static int		read_from_client(int filedes)
 {
-	char				buffer[MAX_BUFF];
+	t_clients			buffer;
 	long				nbytes;
 
 	struct sockaddr_in	connection;
 	socklen_t			addrlen;
 
-	nbytes = recvfrom(filedes, buffer, MAX_BUFF, 0, (struct sockaddr *)&connection, &addrlen);
+	nbytes = recvfrom(filedes, &buffer, sizeof(buffer), 0, (struct sockaddr *)&connection, &addrlen);
 	if (nbytes < 0)
 		perror ("recvfrom"), exit (EXIT_FAILURE);
 	else if (nbytes == 0)
 		return -1;
 	else
-		update_client_info(filedes, buffer, NULL);
+	{
+		printf("%s\n", inet_ntoa(connection.sin_addr));
+		printf("received name: [%s]\n", buffer.name);
+		update_client_info(filedes, buffer.name, NULL);
+		send_new_connected_client(filedes);
+	}
 	return 0;
 }
 
-static void		wait_for_event(int sock, fd_set *read_fd)
+static void		wait_for_event(int sock, fd_set *active_fd)
 {
 	struct			sockaddr_in clientname;
 	socklen_t		size;
+	fd_set			read_fd;
 
-	if (select(FD_SETSIZE, read_fd, NULL, NULL, NULL) < 0)
+	read_fd = *active_fd;
+	if (select(FD_SETSIZE, &read_fd, NULL, NULL, NULL) < 0)
 		perror("(fatal) select"), exit(-1);
 
 	for (int i = 0; i < FD_SETSIZE; ++i)
-		if (FD_ISSET (i, read_fd))
+		if (FD_ISSET (i, &read_fd))
 		{
 			if (i == sock)
 			{
 				int new;
-				size = sizeof (clientname);
-				new = accept (sock, (struct sockaddr *)&clientname, &size);
+				size = sizeof(clientname);
+				new = accept(sock, (struct sockaddr *)&clientname, &size);
 				if (new < 0)
 				{
 					perror ("accept");
 					exit(EXIT_FAILURE);
 				}
-				struct sockaddr_in client = clientname;
-				printf("%s\n", inet_ntoa(client.sin_addr));
 
 				printf("accepted connection: %i\n", new);
 				add_new_client(new);
-				FD_SET (new, read_fd);
+				FD_SET(new, active_fd);
 			}
 			else
 			{
@@ -93,12 +98,32 @@ static void		wait_for_event(int sock, fd_set *read_fd)
 					printf("%s closed !\n", get_client_info(i)->name);
 					close (i);
 					remove_client(i);
-					FD_CLR (i, read_fd);
+					FD_CLR(i, active_fd);
 				}
-				else
-					write_connected_clients(i);
 			}
 		}
+}
+
+static int		get_server_socket(int s)
+{
+	static int so = 0;
+
+	if (s)
+		so = s;
+	return (so);
+}
+
+static void		close_sockets(int s)
+{
+	int		ss;
+	int		*socks;
+
+	(void)s;
+	if ((ss = get_server_socket(0)))
+		close(ss);
+	socks = get_all_open_sockets();
+	for (int i = 0; socks[i]; i++)
+		close(socks[0]);
 }
 
 int				main(int ac, char **av)
@@ -109,8 +134,10 @@ int				main(int ac, char **av)
 
 	if (ac == 2)
 	{
+		signal(SIGINT, close_sockets);
 		port = atoi(av[1]);
 		sock = create_server(port);
+		get_server_socket(sock);
 		FD_ZERO(&read_fd);
 		FD_SET(sock, &read_fd);
 		while (42)

@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/26 02:32:51 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/26 02:43:20 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/26 04:03:00 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,19 @@ void			add_new_client(int fd)
 			g_clients[i].fd = fd;
 			break ;
 		}
+}
+
+int				*get_all_open_sockets(void)
+{
+	static int		s[256];
+	int				j;
+
+	j = 0;
+	for (int i = 0; i < 255; i++)
+		if (g_clients[i].fd)
+			s[j++] = g_clients[i].fd;
+	s[j] = 0;
+	return (s);
 }
 
 void			update_client_info(int fd, char *name, char *ip)
@@ -61,12 +74,23 @@ t_clients		*get_client_info(int fd)
 	return (NULL);
 }
 
-void			write_connected_clients(int fd)
+void			send_new_connected_client(int fd)
 {
+	t_clients	*cl = NULL;
+
 	for (int i = 0; i < 255; i++)
 		if (g_clients[i].fd != fd && g_clients[i].fd)
 		{
-			printf("writed name: %s - ip: %s\n", g_clients[i].name, g_clients[i].ip);
 			write(fd, g_clients + i, MAX_LOGIN_LENGTH + IP_LENGTH);
+			printf("writed name: %s - ip: %s to %i\n", g_clients[i].name, g_clients[i].ip, fd);
 		}
+		else if (g_clients[i].fd == fd)
+			cl = g_clients + i;
+	if (cl)
+		for (int i = 0; i < 255; i++)
+			if (g_clients[i].fd && g_clients[i].fd != fd)
+			{
+				write(g_clients[i].fd, cl, MAX_LOGIN_LENGTH + IP_LENGTH);
+				printf("writed name: %s - ip: %s to %i\n", g_clients[i].name, g_clients[i].ip, g_clients[i].fd);
+			}
 }
