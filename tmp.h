@@ -6,7 +6,7 @@
 /*   By: shayn <shayn@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/25 22:35:48 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/25 16:51:41 by shayn            ###   ########.fr       */
+/*   Updated: 2016/03/25 17:14:56 by shayn            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,10 @@
 # include <fcntl.h>
 # include <string.h>
 # include <stdio.h>
+# include <netdb.h>
+# include <netinet/in.h>
+# include <arpa/inet.h>
+
 
 # define OPTIONS			"a"
 
@@ -28,8 +32,8 @@ typedef	struct 	s_co
 {
 	char	name[MAX_LOGIN_LENGTH];
 	char	ip[sizeof("255.255.255.255")];
-	char	i
 }				t_co;
 
 t_co		*get_connected_client_list(void);
 t_co		*ci_get_infos(void);
+int			ci_connect_server(t_co *infos);

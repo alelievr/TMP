@@ -6,7 +6,7 @@
 /*   By: shayn <shayn@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/25 23:18:25 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/25 16:53:44 by shayn            ###   ########.fr       */
+/*   Updated: 2016/03/25 17:42:04 by shayn            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,13 @@ t_co				*ci_get_infos(void)
 		close(fd);
 	}
 	printf("\nEnter a name: ");
+	fflush(stdout);
 	if ((ret = read(0, infos->name, MAX_LOGIN_LENGTH)) > 0)
 		infos->name[ret] = '\0';
 	return (infos);
 }
 
-int					ci_connect_server(t_co infos)
+int					ci_connect_server(t_co *infos)
 {
 	struct protoent		*proto;
 	struct sockaddr_in	sini;
@@ -57,11 +58,23 @@ int					ci_connect_server(t_co infos)
 	sock = socket(PF_INET, SOCK_STREAM, proto->p_proto);
 	sini.sin_family = AF_INET;
 	sini.sin_port = htons(atoi("4242"));
-	sini.sin_addr.s_addr = inet_addr(infos.ip);
-	if ((sock->ret = connect(sock->sock, (const struct sockaddr *)&sini,
+	sini.sin_addr.s_addr = inet_addr(infos->ip);
+	if ((connect(sock, (const struct sockaddr *)&sini,
 		sizeof(sini))) == -1)
-	return (socket)
+		ft_exit("Connection failed");
+	if ((sendto(sock, infos->name, MAX_LOGIN_LENGTH, MSG_CONFIRM,
+	 (const struct sockaddr *)&sini, sizeof(sini))) == -1)
+		ft_exit("Cannot send infos to the server");
+	return (sock);
 }
+
+// void				ci_discuss(int socket)
+// {
+// 	ssize_t			ret;
+// 	char			buf[256];
+
+// 	if (!(ret))	
+// }
 
 t_co				*get_connected_client_list(void)
 {
@@ -71,6 +84,8 @@ t_co				*get_connected_client_list(void)
 	if (!(infos = ci_get_infos()))
 		ft_exit("Can't get any reliable informations.");
 	socket = ci_connect_server(infos);
-	printf("\n\nConnection infos : \nname: %s\nip: [%s]\n", infos->name, infos->ip);
+	// while (42)
+	// 	ci_discuss(socket);
+	printf("\n\nConnection infos: \nname: %s\nip: [%s]\n", infos->name, infos->ip);
 	return (infos);
 }
