@@ -6,14 +6,14 @@
 /*   By: shayn <shayn@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/25 23:16:05 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/26 18:46:12 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/26 23:34:01 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tmp.h"
 
 #include <time.h>
-static int		create_udp_socket(void)
+static int		create_udp_socket(int bind_port)
 {
 	int					ret;
 	struct sockaddr_in	connection;
@@ -23,10 +23,13 @@ static int		create_udp_socket(void)
 		perror("sock"), exit(-1);
 	bzero(&connection, sizeof(connection));
 	connection.sin_family = AF_INET;
-	connection.sin_port = htons(CLIENTS_PORT + (rand() % 100));
-	connection.sin_addr.s_addr = htonl(INADDR_ANY);
-	if (bind(ret, (struct sockaddr *)&connection, sizeof(connection))==-1)
-		perror("(fatal) bind"), exit(-1);
+	connection.sin_port = htons(CLIENTS_PORT);
+	if (bind_port)
+	{
+		connection.sin_addr.s_addr = htonl(INADDR_ANY);
+		if (bind(ret, (struct sockaddr *)&connection, sizeof(connection))==-1)
+			perror("(fatal) bind"), exit(-1);
+	}
 	return (ret);
 }
 
@@ -41,8 +44,8 @@ int				main(int ac, char **av)
 	getopt(ac, av, OPTIONS);
 	printf("%s running with %s\n", *av, optarg);
 	socket = ci_init_connexion();
-	sock_read_message = create_udp_socket();
-	sock_send_message = sock_read_message;
+	sock_read_message = create_udp_socket(1);
+	sock_send_message = create_udp_socket(0);
 	FD_ZERO(&read_fd_new);
 	FD_SET(0, &read_fd_new);
 	FD_SET(sock_read_message, &read_fd_new);

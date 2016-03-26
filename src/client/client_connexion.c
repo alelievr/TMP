@@ -6,7 +6,7 @@
 /*   By: shayn <shayn@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/25 22:39:17 by vdaviot           #+#    #+#             */
-/*   Updated: 2016/03/26 19:18:49 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/26 22:19:15 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <sys/ioctl.h>
 #include <arpa/inet.h>
 #include <net/if.h>
+#include <ifaddrs.h>
 
 static int			get_server_ip(char *hostname, char *ip)
 {
@@ -33,19 +34,29 @@ static int			get_server_ip(char *hostname, char *ip)
 
 static int			get_local_ip(char *ip)
 {
-	int			fd;
-	struct		ifreq ifr;
-	char		iface[] = "eth0";
+	struct ifaddrs		*ias = NULL;
+	struct ifaddrs		*ifa = NULL;
+	void				*tmp = NULL;
+	char				buff[INET_ADDRSTRLEN];
 
-	if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) == -1)
-		return (0);
-	ifr.ifr_addr.sa_family = AF_INET;
-	strncpy(ifr.ifr_name, iface, IFNAMSIZ-1);
-	ioctl(fd, SIOCGIFADDR, &ifr);
-	printf("IP address of %s - %s\n" , iface , inet_ntoa(( (struct sockaddr_in *)(unsigned long)&ifr.ifr_addr )->sin_addr) );
-	strcpy(ip, inet_ntoa(( (struct sockaddr_in *)(unsigned long)&ifr.ifr_addr )->sin_addr));
-	close(fd);
-	return (1);
+	getifaddrs(&ias);
+	for (ifa = ias; ifa != NULL; ifa = ifa->ifa_next)
+	{
+		if (!ifa->ifa_addr)
+			continue;
+		if (ifa->ifa_addr->sa_family == AF_INET) {
+			tmp = &((struct sockaddr_in *)(unsigned long)ifa->ifa_addr)->sin_addr;
+			inet_ntop(AF_INET, tmp, buff, INET_ADDRSTRLEN);
+			printf("%s IP Address %s\n", ifa->ifa_name, buff);
+			if (!strcmp(buff, "127.0.0.1"))
+				continue ;
+			strcpy(ip, buff);
+			break ;
+		}
+	}
+	if (ias)
+		freeifaddrs(ias);
+	return 0;
 }
 
 static t_co			*ci_get_infos(void)
@@ -94,7 +105,7 @@ static int				ci_connect_server(t_co *infos)
 	sini.sin_addr.s_addr = inet_addr(infos->ip);
 	if ((connect(sock, (const struct sockaddr *)&sini, sizeof(sini))) == -1)
 	{
-		printf("Server onnection failed\n");
+		printf("Server connection failed\n");
 		return (-1);
 	}
 	get_local_ip(infos->ip);

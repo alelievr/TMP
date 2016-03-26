@@ -6,7 +6,7 @@
 /*   By: shayn <shayn@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/25 23:18:25 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/26 18:36:46 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/26 23:03:02 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,8 @@ int					stdin_event(int sock)
 		m.id = 42;
 		strcpy(m.message, buff);
 
-		sendto(sock, &m, sizeof(m), 0, (struct sockaddr *)&connection, sizeof(connection));
+		if (sendto(sock, &m, sizeof(m), 0, (struct sockaddr *)&connection, sizeof(connection)) < 0)
+			perror("sendto");
 	}
 	return ((int)r);
 }
@@ -89,6 +90,7 @@ int					peer_message_event(int sock)
 	t_message				m;
 	long					r;
 
+	printf("here !\n");
 	colen = sizeof(co);
 	if ((r = recvfrom(sock, &m, sizeof(m), 0, (struct sockaddr *)&co, &colen)) == -1)
 		perror("recvfrom");
