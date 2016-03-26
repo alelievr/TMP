@@ -6,22 +6,24 @@
 /*   By: shayn <shayn@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/25 23:16:05 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/26 18:37:42 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/26 18:46:12 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tmp.h"
 
+#include <time.h>
 static int		create_udp_socket(void)
 {
 	int					ret;
 	struct sockaddr_in	connection;
 
+	srand((unsigned int)clock());
 	if ((ret = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
 		perror("sock"), exit(-1);
 	bzero(&connection, sizeof(connection));
 	connection.sin_family = AF_INET;
-	connection.sin_port = htons(CLIENTS_PORT);
+	connection.sin_port = htons(CLIENTS_PORT + (rand() % 100));
 	connection.sin_addr.s_addr = htonl(INADDR_ANY);
 	if (bind(ret, (struct sockaddr *)&connection, sizeof(connection))==-1)
 		perror("(fatal) bind"), exit(-1);

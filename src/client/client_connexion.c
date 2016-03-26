@@ -6,11 +6,47 @@
 /*   By: shayn <shayn@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/25 22:39:17 by vdaviot           #+#    #+#             */
-/*   Updated: 2016/03/26 18:40:55 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/26 19:18:49 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tmp.h"
+#include <sys/ioctl.h>
+#include <arpa/inet.h>
+#include <net/if.h>
+
+static int			get_server_ip(char *hostname, char *ip)
+{
+	struct addrinfo		*result;
+	struct addrinfo		*res;
+	struct sockaddr_in	*sock_ip;
+	int					error;
+
+	if ((error = getaddrinfo(hostname, NULL, NULL, &result)) != 0)
+		return (0);
+	res = result;
+	sock_ip = (struct sockaddr_in *)(unsigned long)res->ai_addr;
+	strcpy(ip, inet_ntoa(sock_ip->sin_addr));
+	freeaddrinfo(result);
+	return (1);
+}
+
+static int			get_local_ip(char *ip)
+{
+	int			fd;
+	struct		ifreq ifr;
+	char		iface[] = "eth0";
+
+	if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) == -1)
+		return (0);
+	ifr.ifr_addr.sa_family = AF_INET;
+	strncpy(ifr.ifr_name, iface, IFNAMSIZ-1);
+	ioctl(fd, SIOCGIFADDR, &ifr);
+	printf("IP address of %s - %s\n" , iface , inet_ntoa(( (struct sockaddr_in *)(unsigned long)&ifr.ifr_addr )->sin_addr) );
+	strcpy(ip, inet_ntoa(( (struct sockaddr_in *)(unsigned long)&ifr.ifr_addr )->sin_addr));
+	close(fd);
+	return (1);
+}
 
 static t_co			*ci_get_infos(void)
 {
@@ -39,7 +75,8 @@ static t_co			*ci_get_infos(void)
 	if ((ret = read(0, infos->name, MAX_LOGIN_LENGTH)) > 0)
 		infos->name[ret] = '\0';
 	strtrim_buff(infos->name);
-	get_server_ip(buf_dns, infos->ip);
+	if (!get_server_ip(buf_dns, infos->ip))
+		return (NULL);
 	return (infos);
 }
 
@@ -60,7 +97,8 @@ static int				ci_connect_server(t_co *infos)
 		printf("Server onnection failed\n");
 		return (-1);
 	}
-	if ((sendto(sock, infos->name, MAX_LOGIN_LENGTH, 0, (const struct sockaddr *)&sini, sizeof(sini))) == -1)
+	get_local_ip(infos->ip);
+	if ((sendto(sock, infos->name, MAX_LOGIN_LENGTH + IP_LENGTH, 0, (const struct sockaddr *)&sini, sizeof(sini))) == -1)
 		perror("(fatal) sendto"), exit(-1);
 	return (sock);
 }
@@ -70,35 +108,8 @@ int					ci_init_connexion()
 	t_co	*infos;
 
 	if (!(infos = ci_get_infos()))
-		ft_exit("bad IP file format");
+		ft_exit("bad IP file format/hostname unreachable");
 	printf("\n\nConnection infos: \nname: %s\nip: [%s]\n", infos->name, infos->ip);
 	return (ci_connect_server(infos));
 }
 
-void				get_server_ip(char *domain, char *ip)
-{
-	struct addrinfo	hints, *res, *p;
-	int				status;
-
-	memset(&hints, 0, sizeof(hints));
-	hints.ai_family = AF_INET;
-	hints.ai_socktype = SOCK_STREAM;
-	if ((status = getaddrinfo(domain, NULL, &hints, &res)) != 0)
-		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(status));
-	for(p = res; p != NULL; p = p->ai_next)
-	{
-		void 			*addr;
-		char 			*ipver = NULL;
-
-		if (p->ai_family == AF_INET)
-		{
-			struct sockaddr_in *ipv4 = (struct sockaddr_in *)(unsigned long)p->ai_addr;
-			addr = &(ipv4->sin_addr);
-			ipver = "IPv4";
-		}
-        printf("  %s: %s\n", ipver, ip);
-		inet_ntop(p->ai_family, addr, ip, sizeof(IP_LENGTH));
-        printf("  %s: %s\n", ipver, ip);
-    }
-    freeaddrinfo(res);
-}
