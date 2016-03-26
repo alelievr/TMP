@@ -1,12 +1,12 @@
 /* ************************************************************************** */
-/*                                                                            */
+/*			                                                                */
 /*                                                        :::      ::::::::   */
 /*   client_message.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: shayn <shayn@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/25 22:39:17 by vdaviot           #+#    #+#             */
-/*   Updated: 2016/03/26 18:15:02 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/26 18:40:55 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,17 @@ static t_co			*ci_get_infos(void)
 	int				fd;
 	ssize_t			ret;
 	char			*ptr;
+	char			buf_dns[255];
 
 	if (!(infos = (t_co*)malloc(sizeof(t_co))))
 		perror("malloc"), exit(-1);
 	if((fd = open(IP_FILE, O_RDONLY)) == -1)
-		ft_exit("IP file config not found");
-	if ((ret = read(fd, infos->ip, 15)) > 0)
+		ft_exit("IP file not found");
+	if ((ret = read(fd, buf_dns, 255)) > 0)
 	{
-		infos->ip[ret] = '\0';
-		if (!(ptr = strchr(infos->ip, ':')))
+		buf_dns[ret] = '\0';
+		// infos->ip[ret] = '\0';
+		if (!(ptr = strchr(buf_dns, ':')))
 			return (NULL);
 		else
 			*ptr = '\0';
@@ -37,6 +39,7 @@ static t_co			*ci_get_infos(void)
 	if ((ret = read(0, infos->name, MAX_LOGIN_LENGTH)) > 0)
 		infos->name[ret] = '\0';
 	strtrim_buff(infos->name);
+	get_server_ip(buf_dns, infos->ip);
 	return (infos);
 }
 
@@ -70,4 +73,32 @@ int					ci_init_connexion()
 		ft_exit("bad IP file format");
 	printf("\n\nConnection infos: \nname: %s\nip: [%s]\n", infos->name, infos->ip);
 	return (ci_connect_server(infos));
+}
+
+void				get_server_ip(char *domain, char *ip)
+{
+	struct addrinfo	hints, *res, *p;
+	int				status;
+
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+	if ((status = getaddrinfo(domain, NULL, &hints, &res)) != 0)
+		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(status));
+	for(p = res; p != NULL; p = p->ai_next)
+	{
+		void 			*addr;
+		char 			*ipver = NULL;
+
+		if (p->ai_family == AF_INET)
+		{
+			struct sockaddr_in *ipv4 = (struct sockaddr_in *)(unsigned long)p->ai_addr;
+			addr = &(ipv4->sin_addr);
+			ipver = "IPv4";
+		}
+        printf("  %s: %s\n", ipver, ip);
+		inet_ntop(p->ai_family, addr, ip, sizeof(IP_LENGTH));
+        printf("  %s: %s\n", ipver, ip);
+    }
+    freeaddrinfo(res);
 }

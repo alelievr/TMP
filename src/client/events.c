@@ -40,11 +40,6 @@ int					server_connection_event(int socket)
 		}
 	}
 	return (1);
-//	i = -1;
-//	while (ci_list[++i].name[0])
-//		printf("Info on client no%d:\n\tname: \t%s\nip: [%s]\n\n--------------------------\n\n",
-//		 i, ci_list[i].name, ci_list[i].ip);
-//	return (ci_list);
 }
 
 int					peer_connection_event(int sock)

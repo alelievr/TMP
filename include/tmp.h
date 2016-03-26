@@ -45,6 +45,7 @@ int			ci_init_connexion(void);
 void		ft_exit(char *str);
 int			get_client_list(char *buff);
 t_co		*get_client_info(int index);
+void		get_server_ip(char *domain, char *ip);
 
 /*
  **	Connection events:
