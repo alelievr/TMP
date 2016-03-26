@@ -6,7 +6,7 @@
 #    By: shayn <shayn@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/07/15 15:13:38 by alelievr          #+#    #+#              #
-#    Updated: 2016/03/26 16:45:02 by alelievr         ###   ########.fr        #
+#    Updated: 2016/03/26 18:14:16 by alelievr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,7 @@ SRCS_CLIENT	=	client_main.c		\
 				events.c			\
 				client_connexion.c	\
 				client_api.c		\
+				utils.c				\
 
 #	Objects
 OBJDIR		=	obj

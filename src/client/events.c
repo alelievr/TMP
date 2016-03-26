@@ -6,11 +6,12 @@
 /*   By: shayn <shayn@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/25 23:18:25 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/26 16:44:54 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/26 18:36:46 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tmp.h"
+#include <time.h>
 
 int					server_connection_event(int socket)
 {
@@ -53,12 +54,51 @@ int					peer_connection_event(int sock)
 	return (1);
 }
 
-int					stdin_event(void)
+int					stdin_event(int sock)
 {
-	char		buff[0xF000];
-	long		r;
+	char				buff[0xF000];
+	long				r;
+	t_co				*co;
+	t_message			m;
+	struct sockaddr_in	connection;
 
-	r = read(0, buff, sizeof(buff));
+	if ((r = read(0, buff, sizeof(buff))) < 0)
+		perror("(fatal) read"), exit(-1);
+	if (!r)
+		return (-1);
+	buff[r] = 0;
 	printf("catched stdin event: [%s]\n", buff);
+	co = get_client_info(0);
+	if (co)
+	{
+		printf("sending to the first connected person: %s : %s\n", co->name, co->ip);
+		bzero(&connection, sizeof(connection));
+		connection.sin_family = AF_INET;
+		connection.sin_port = htons(CLIENTS_PORT);
+		if (inet_aton(co->ip, &connection.sin_addr) == 0)
+			perror("inet_aton");
+
+		m.time = time(NULL);
+		m.id = 42;
+		strcpy(m.message, buff);
+
+		sendto(sock, &m, sizeof(m), 0, (struct sockaddr *)&connection, sizeof(connection));
+	}
 	return ((int)r);
+}
+
+int					peer_message_event(int sock)
+{
+	struct sockaddr_in		co;
+	socklen_t				colen;
+	t_message				m;
+	long					r;
+
+	colen = sizeof(co);
+	if ((r = recvfrom(sock, &m, sizeof(m), 0, (struct sockaddr *)&co, &colen)) == -1)
+		perror("recvfrom");
+	else if (r == 0)
+		return (-1);
+	printf("received message: <%u> [%s] %s\n", m.id, ctime((const time_t *)&(m.time)), m.message);
+	return (1);
 }

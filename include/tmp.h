@@ -31,17 +31,27 @@
 
 typedef t_clients	t_co;
 
-t_co		*get_connected_client_list(int socket);
-t_co		*ci_get_client_list(int socket);
+typedef struct		s_message
+{
+	long				time;
+	unsigned int		id;
+	int					:32;
+	char				message[CLIENT_MESSAGE_LENGTH];
+}					t_message;
+
+char		*strtrim_buff(char *s);
+
 int			ci_init_connexion(void);
 void		ft_exit(char *str);
 int			get_client_list(char *buff);
+t_co		*get_client_info(int index);
 
 /*
  **	Connection events:
 */
-int			stdin_event(void);
+int			stdin_event(int sock);
 int			server_connection_event(int socket);
 int			peer_connection_event(int socket);
+int			peer_message_event(int socket);
 void		add_client(t_co *c);
 void		remove_client(t_co *c);
