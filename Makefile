@@ -5,8 +5,8 @@
 #                                                     +:+ +:+         +:+      #
 #    By: shayn <shayn@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created  2014/07/15 15:13:38 by alelievr          #+#    #+#              #
-#    Updated  2016/03/25 23:13:53 by alelievr         ###   ########.fr        #
+#    Created: 2014/07/15 15:13:38 by alelievr          #+#    #+#              #
+#    Updated: 2016/03/25 19:46:42 by shayn            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,6 +23,8 @@ SRCS_SERVER	=	server_main.c		\
 
 SRCS_CLIENT	=	client_main.c				\
 				get_connected_client_list.c	\
+				client_connexion.c			\
+				client_message.c			\
 
 #	Objects
 OBJDIR		=	obj
