@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/25 22:39:17 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/26 03:56:20 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/26 04:06:29 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ static void		wait_for_event(int sock, fd_set *active_fd)
 	struct			sockaddr_in clientname;
 	socklen_t		size;
 	fd_set			read_fd;
+	int				new_sock;
 
 	read_fd = *active_fd;
 	if (select(FD_SETSIZE, &read_fd, NULL, NULL, NULL) < 0)
@@ -78,15 +79,9 @@ static void		wait_for_event(int sock, fd_set *active_fd)
 		{
 			if (i == sock)
 			{
-				int new;
 				size = sizeof(clientname);
-				new = accept(sock, (struct sockaddr *)&clientname, &size);
-				if (new < 0)
-				{
-					perror ("accept");
-					exit(EXIT_FAILURE);
-				}
-
+				if ((new_sock = accept(sock, (struct sockaddr *)&clientname, &size)) < 0)
+					perror ("accept"), exit(-1);
 				printf("accepted connection: %i\n", new);
 				add_new_client(new);
 				FD_SET(new, active_fd);
