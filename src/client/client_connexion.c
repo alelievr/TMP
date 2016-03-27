@@ -95,7 +95,7 @@ void				get_server_ip(char *domain, char *ip)
 			addr = &(ipv4->sin_addr);
 			ipver = "IPv4";
 		}
-        printf("  %s: %s\n", ipver, i);
+        printf("  %s: %s\n", ipver, ip);
 		inet_ntop(p->ai_family, addr, ip, sizeof(IP_LENGTH));
         printf("  %s: %s\n", ipver, ip);
     }
