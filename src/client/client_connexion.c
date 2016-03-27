@@ -123,34 +123,3 @@ int					ci_init_connexion()
 	printf("\n\nConnection infos: \nname: %s\nip: [%s]\n", infos->name, infos->ip);
 	return (ci_connect_server(infos));
 }
-
-<<<<<<< HEAD
-void				get_server_ip(char *domain, char *ip)
-{
-	struct addrinfo	hints, *res, *p;
-	int				status;
-
-	memset(&hints, 0, sizeof(hints));
-	hints.ai_family = AF_INET;
-	hints.ai_socktype = SOCK_STREAM;
-	if ((status = getaddrinfo(domain, NULL, &hints, &res)) != 0)
-		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(status));
-	for(p = res; p != NULL; p = p->ai_next)
-	{
-		void 			*addr;
-		char 			*ipver = NULL;
-
-		if (p->ai_family == AF_INET)
-		{
-			struct sockaddr_in *ipv4 = (struct sockaddr_in *)(unsigned long)p->ai_addr;
-			addr = &(ipv4->sin_addr);
-			ipver = "IPv4";
-		}
-        printf("  %s: %s\n", ipver, ip);
-		inet_ntop(p->ai_family, addr, ip, sizeof(IP_LENGTH));
-        printf("  %s: %s\n", ipver, ip);
-    }
-    freeaddrinfo(res);
-}
-=======
->>>>>>> b198b4de8957710a7562166b81502478e8801602
