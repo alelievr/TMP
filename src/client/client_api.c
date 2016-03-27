@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/26 02:32:51 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/26 16:42:28 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/26 18:23:12 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,4 +51,19 @@ int				get_client_list(char *buff)
 			co++;
 		}
 	return (co);
+}
+
+t_co			*get_client_info(int index)
+{
+	int		j;
+
+	j = 0;
+	for (int i = 0; i < 255; i++)
+		if (g_co[i].name[0])
+		{
+			if (index == j)
+				return (g_co + i);
+			j++;
+		}
+	return (NULL);
 }

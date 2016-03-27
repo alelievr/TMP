@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/25 22:39:17 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/26 16:32:23 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/26 19:11:43 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static int			create_server(int port)
 
 static int		read_from_client(int filedes)
 {
-	char				buff[MAX_LOGIN_LENGTH];
+	char				buff[MAX_LOGIN_LENGTH + IP_LENGTH];
 	long				nbytes;
 	struct sockaddr_in	connection;
 	socklen_t			addrlen = sizeof(connection);
@@ -58,8 +58,8 @@ static int		read_from_client(int filedes)
 				inet_ntoa(((struct sockaddr_in *)&connection)->sin_addr));
 
 		printf("%s\n", inet_ntoa(connection.sin_addr));
-		printf("received name: [%s]\n", buff);
-		update_client_info(filedes, buff, NULL);
+		printf("received infos: [%s] : [%s]\n", buff, buff + MAX_LOGIN_LENGTH);
+		update_client_info(filedes, buff, buff + MAX_LOGIN_LENGTH);
 		send_new_connected_client(filedes);
 	}
 	return 0;
