@@ -6,7 +6,7 @@
 /*   By: shayn <shayn@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/25 23:18:25 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/26 23:03:02 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/27 12:34:27 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,9 @@ int					stdin_event(int sock)
 			perror("inet_aton");
 
 		m.time = time(NULL);
-		m.id = 42;
+		unsigned char buf[sizeof(struct in6_addr)];
+		m.id.ip = inet_pton(AF_INET, "localhost", buf);
+		m.id.pid = getpid();
 		strcpy(m.message, buff);
 
 		if (sendto(sock, &m, sizeof(m), 0, (struct sockaddr *)&connection, sizeof(connection)) < 0)
@@ -96,6 +98,6 @@ int					peer_message_event(int sock)
 		perror("recvfrom");
 	else if (r == 0)
 		return (-1);
-	printf("received message: <%u> [%s] %s\n", m.id, ctime((const time_t *)&(m.time)), m.message);
+	printf("received message: <%u:%u> [%s] %s\n", m.id.ip, m.id.pid, ctime((const time_t *)&(m.time)), m.message);
 	return (1);
 }

@@ -34,8 +34,10 @@ typedef t_clients	t_co;
 typedef struct		s_message
 {
 	long				time;
-	unsigned int		id;
-	int					:32;
+	struct {
+		int			ip;
+		int			pid;
+	}					id;
 	char				message[CLIENT_MESSAGE_LENGTH];
 }					t_message;
 
