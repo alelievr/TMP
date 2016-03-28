@@ -6,7 +6,7 @@
 /*   By: shayn <shayn@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/25 23:16:05 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/27 12:31:24 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/27 20:22:27 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ static int		create_udp_socket(int bind_port)
 	{
 		if (setsockopt(ret, SOL_SOCKET, SO_REUSEPORT, &yes, sizeof(int)) == -1)
 			perror("setsockopt");
-		if (setsockopt(ret, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1)
-			perror("setsockopt");
+//		if (setsockopt(ret, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1)
+//			perror("setsockopt");
 		connection.sin_addr.s_addr = htonl(INADDR_ANY);
 		if (bind(ret, (struct sockaddr *)&connection, sizeof(connection)) == -1)
 			perror("(fatal) bind"), exit(-1);

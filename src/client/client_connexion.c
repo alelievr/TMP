@@ -6,7 +6,7 @@
 /*   By: shayn <shayn@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/25 22:39:17 by vdaviot           #+#    #+#             */
-/*   Updated: 2016/03/26 22:19:15 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/28 02:52:45 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ static t_co			*ci_get_infos(void)
 			return (NULL);
 		else
 			*ptr = '\0';
+		infos->fd = atoi(ptr + 1);
 		close(fd);
 	}
 	printf("\nEnter a name: ");
@@ -101,7 +102,7 @@ static int				ci_connect_server(t_co *infos)
 		return (-1);
 	sock = socket(PF_INET, SOCK_STREAM, proto->p_proto);
 	sini.sin_family = AF_INET;
-	sini.sin_port = htons(atoi("4242"));
+	sini.sin_port = htons(infos->fd);
 	sini.sin_addr.s_addr = inet_addr(infos->ip);
 	if ((connect(sock, (const struct sockaddr *)&sini, sizeof(sini))) == -1)
 	{
