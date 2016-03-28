@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/25 22:39:17 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/28 02:54:14 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/28 12:51:49 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ static int		read_from_client(int filedes)
 	long				nbytes;
 	struct sockaddr_in	connection;
 	socklen_t			addrlen = sizeof(connection);
+	int					port;
 
 	nbytes = recvfrom(filedes, buff, sizeof(buff), 0, (struct sockaddr *)&connection, &addrlen);
 	if (nbytes < 0)
@@ -54,13 +55,13 @@ static int		read_from_client(int filedes)
 		return -1;
 	else
 	{
-		printf("box IP: %s\n", inet_ntoa(((struct sockaddr_in *)&connection)->sin_addr));
 		printf("local IP: %s\n", buff + MAX_LOGIN_LENGTH);
-		printf("box port: %i\n", ntohs(((struct sockaddr_in *)&connection)->sin_port));
+		port = ntohs(((struct sockaddr_in *)&connection)->sin_port);
+		printf("box port: %i\n", port);
 
 		printf("%s\n", inet_ntoa(connection.sin_addr));
 		printf("received infos: [%s] : [%s]\n", buff, buff + MAX_LOGIN_LENGTH);
-		update_client_info(filedes, buff, buff + MAX_LOGIN_LENGTH);
+		update_client_info(filedes, buff, port);
 		send_new_connected_client(filedes);
 	}
 	return 0;
@@ -85,8 +86,9 @@ static void		wait_for_event(int sock, fd_set *active_fd)
 				size = sizeof(clientname);
 				if ((new_sock = accept(sock, (struct sockaddr *)&clientname, &size)) < 0)
 					perror ("accept"), exit(-1);
+				printf("box IP: %s\n", inet_ntoa(((struct sockaddr_in *)&clientname)->sin_addr));
 				printf("accepted connection: %i\n", new_sock);
-				add_new_client(new_sock);
+				add_new_client(new_sock, inet_ntoa(((struct sockaddr_in *)&clientname)->sin_addr));
 				FD_SET(new_sock, active_fd);
 			}
 			else

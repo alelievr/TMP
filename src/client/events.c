@@ -6,7 +6,7 @@
 /*   By: shayn <shayn@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/25 23:18:25 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/27 12:34:27 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/28 12:55:20 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,10 +66,10 @@ int					stdin_event(int sock)
 	co = get_client_info(0);
 	if (co)
 	{
-		printf("sending to the first connected person: %s : %s\n", co->name, co->ip);
+		printf("sending to the first connected person: %s : %s:%i\n", co->name, co->ip, htons(co->port));
 		bzero(&connection, sizeof(connection));
 		connection.sin_family = AF_INET;
-		connection.sin_port = htons(CLIENTS_PORT);
+		connection.sin_port = htons(co->port);
 		if (inet_aton(co->ip, &connection.sin_addr) == 0)
 			perror("inet_aton");
 

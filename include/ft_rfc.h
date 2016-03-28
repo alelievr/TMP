@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/26 15:28:10 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/26 18:06:33 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/03/28 12:28:58 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,5 +29,5 @@ typedef struct	s_clients
 	char			ip[IP_LENGTH];
 	int				:8;
 	int				fd;
-	int				:32;
+	int				port;
 }				t_clients;
