@@ -6,7 +6,7 @@
 /*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/25 22:39:17 by alelievr          #+#    #+#             */
-/*   Updated: 2016/03/28 12:51:49 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/04/19 18:13:40 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,9 @@ static int		read_from_client(int filedes)
 	else
 	{
 		printf("local IP: %s\n", buff + MAX_LOGIN_LENGTH);
-		port = ntohs(((struct sockaddr_in *)&connection)->sin_port);
+		port = /*ntohs(((struct sockaddr_in *)&connection)->sin_port)*/ntohs(atoi(buff + MAX_LOGIN_LENGTH));
 		printf("box port: %i\n", port);
+		printf("box IP: %s\n", inet_ntoa(((struct sockaddr_in *)&connection)->sin_addr));
 
 		printf("%s\n", inet_ntoa(connection.sin_addr));
 		printf("received infos: [%s] : [%s]\n", buff, buff + MAX_LOGIN_LENGTH);

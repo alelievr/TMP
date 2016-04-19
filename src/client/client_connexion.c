@@ -6,7 +6,7 @@
 /*   By: shayn <shayn@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/25 22:39:17 by vdaviot           #+#    #+#             */
-/*   Updated: 2016/03/28 02:52:45 by alelievr         ###   ########.fr       */
+/*   Updated: 2016/04/19 18:13:12 by alelievr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ static int			get_local_ip(char *ip)
 		if (ifa->ifa_addr->sa_family == AF_INET) {
 			tmp = &((struct sockaddr_in *)(unsigned long)ifa->ifa_addr)->sin_addr;
 			inet_ntop(AF_INET, tmp, buff, INET_ADDRSTRLEN);
-			printf("%s IP Address %s\n", ifa->ifa_name, buff);
 			if (!strcmp(buff, "127.0.0.1"))
 				continue ;
 			strcpy(ip, buff);
@@ -56,6 +55,7 @@ static int			get_local_ip(char *ip)
 	}
 	if (ias)
 		freeifaddrs(ias);
+	printf("local ip: %s\n", buff);
 	return 0;
 }
 
