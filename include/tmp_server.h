@@ -15,6 +15,8 @@
 # include "ft_rfc.h"
 # include <unistd.h>
 # include <stdlib.h>
+ #include <sys/select.h>
+#include <signal.h>
 
 # define STACK_SIZE			42
 
