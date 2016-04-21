@@ -18,17 +18,13 @@
 
 static t_clients	g_clients[255];
 
-void			add_new_client(int fd, char *ip)
+void			add_new_client(int fd)
 {
 	for (int i = 0; i < 255; i++)
 		if (g_clients[i].fd == 0)
 		{
 			g_clients[i].code = CONNECTED_BYTE;
 			g_clients[i].fd = fd;
-			if (!ip)
-				strcpy(g_clients[i].ip, "0.0.0.0");
-			else
-				strcpy(g_clients[i].ip, ip);
 			break ;
 		}
 }
@@ -46,7 +42,7 @@ int				*get_all_open_sockets(void)
 	return (s);
 }
 
-void			update_client_info(int fd, char *name, int port)
+void			update_client_info(int fd, char *name, int port, char *ip)
 {
 	for (int i = 0; i < 255; i++)
 		if (g_clients[i].fd == fd)
@@ -54,6 +50,10 @@ void			update_client_info(int fd, char *name, int port)
 			strncpy(g_clients[i].name, name, 63);
 			g_clients[i].name[63] = 0;
 			g_clients[i].port = port;
+			if (!ip)
+				strcpy(g_clients[i].ip, "0.0.0.0");
+			else
+				strcpy(g_clients[i].ip, ip);
 			break ;
 		}
 }

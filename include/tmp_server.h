@@ -21,8 +21,8 @@
 /*
  **	Client API:
 */
-void			add_new_client(int fd, char *ip);
-void			update_client_info(int fd, char *name, int port);
+void			add_new_client(int fd);
+void			update_client_info(int fd, char *name, int port, char *ip);
 void			remove_client(int fd);
 t_clients		*get_client_info(int fd);
 void			send_new_connected_client(int fd);
